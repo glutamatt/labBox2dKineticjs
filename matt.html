@@ -134,8 +134,8 @@ for (t = 0 ; t < 50 ; t++) {
 			return function()
 			{
 				
-			hexagon.setX((testBody.GetPosition().x * coefTest - w/2)  );
-		hexagon.setY((testBody.GetPosition().y * coefTest -h/2)  );
+			hexagon.setX(  testBody.GetPosition().x * coefTest );
+		hexagon.setY(  testBody.GetPosition().y * coefTest ) ;
 		hexagon.setRotation(testBody.GetAngle());
 			}
 		
@@ -168,11 +168,7 @@ for (t = 0 ; t < 50 ; t++) {
          for (i = 0 ; i < actors.length ; i++)
         	 {
         	 
-        	   hexagon = actors[i].sprite ;
-        	   testBody =  actors[i].body ;
-	   			hexagon.setX((testBody.GetPosition().x -0.5) * coefTest );
-				hexagon.setY((testBody.GetPosition().y -0.7) * coefTest );
-				hexagon.setRotation(testBody.GetAngle());
+        	actors[i].draw()
         	 }
 
 			
