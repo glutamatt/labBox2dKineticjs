@@ -16,6 +16,7 @@
     
 var coefTest = 30 ;
 
+var actors = new Array() ;
 
     //box2d
 var   b2Vec2 = Box2D.Common.Math.b2Vec2
@@ -34,47 +35,44 @@ var   b2Vec2 = Box2D.Common.Math.b2Vec2
 world = new b2World(
  new b2Vec2(0, 10)    //gravity
  ,  true                 //allow sleep
- );          
+ );         
+
+
+
+function createRectBody(w, h , x, y , hi)
+{
+	var fixDef = new b2FixtureDef;
+    fixDef.density = 1.0;
+    fixDef.friction = 0.5;
+    fixDef.restitution = 0.2;
+    
+var bodyDef = new b2BodyDef;
+bodyDef.type = b2Body.b2_dynamicBody;  
+  fixDef.shape = new b2PolygonShape;
+          fixDef.shape.SetAsBox(
+                w / 2
+             ,  h / 2
+          ); 
+           bodyDef.position.x = x;
+       bodyDef.position.y = y;
+       var testBody = world.CreateBody(bodyDef);
+       testBody.CreateFixture(fixDef); 
+       
+       testBody.ApplyImpulse(new b2Vec2(hi,0), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
+       
+       return testBody ;
+}
+
+
+      //groud
 var fixDef = new b2FixtureDef;
          fixDef.density = 1.0;
          fixDef.friction = 0.5;
          fixDef.restitution = 0.2;
-         
-  var bodyDef = new b2BodyDef;
-  bodyDef.type = b2Body.b2_dynamicBody;  
-       fixDef.shape = new b2PolygonShape;
-               fixDef.shape.SetAsBox(
-                     0.5 //half width
-                  ,  0.7 //half height
-               ); 
-                bodyDef.position.x = 0;
-            bodyDef.position.y = 0;
-            var testBody = world.CreateBody(bodyDef);
-            testBody.CreateFixture(fixDef); 
-            
-            testBody.ApplyImpulse(new b2Vec2(8,0), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
-            
-            
-            
              var bodyDef = new b2BodyDef;
-  bodyDef.type = b2Body.b2_dynamicBody;  
-       fixDef.shape = new b2PolygonShape;
-               fixDef.shape.SetAsBox(
-                     0.5 //half width
-                  ,  0.7 //half height
-               ); 
-                bodyDef.position.x = 10;
-            bodyDef.position.y =0.5;
-            var testBody2 = world.CreateBody(bodyDef);
-            testBody2.CreateFixture(fixDef); 
-            
-            testBody2.ApplyImpulse(new b2Vec2(-8,0), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
-            
-    
-      //groud
       bodyDef.type = b2Body.b2_staticBody;  
       fixDef.shape = new b2PolygonShape;
-fixDef.shape.SetAsBox(10, 1);
+fixDef.shape.SetAsBox(5, 1);
       bodyDef.position.y = 295 / coefTest ;
       bodyDef.position.x = 0;
 world.CreateBody(bodyDef).CreateFixture(fixDef); 
@@ -102,29 +100,52 @@ world.CreateBody(bodyDef).CreateFixture(fixDef);
         var layer = new Kinetic.Layer();
 
 
-        var hexagon = new Kinetic.Rect({
-          x: 0,
-          y: 0,
-          width: coefTest,
-          height: 1.4 * coefTest,
-          fill: "#00D2FF",
-          stroke: "black",
-          strokeWidth: 4,
-          offset: [coefTest / 2 , 1.4 * coefTest / 2]
-        });
         
-         var hexagon2 = new Kinetic.Rect({
-          x: 0,
-          y: 0,
-          width: coefTest,
-          height: 1.4 * coefTest,
-          fill: "#00D2FF",
-          stroke: "red",
-          strokeWidth: 4,
-          offset: [Math.round(coefTest / 2) , Math.round(1.4 * coefTest / 2)]
-        });
+        function createRectSprite(w, h)
+        {
+        	
+        	return new Kinetic.Rect({
+                x: 0,
+                y: 0,
+                width: w ,
+                height: h ,
+                fill: "#00D2FF",
+                stroke: "black",
+                strokeWidth: 2,
+                offset: [ w/ 2 , h   / 2]
+              });
+        }
+        
+for (t = 0 ; t < 50 ; t++) {
+	
+	w = Math.random() * 50 ;
+	h = Math.random() * 50 ;
+	y = Math.random() *10 ;
+	x = Math.random() *300 ;
+	hi = (Math.random() - 1 )*5 ;
 
-        layer.add(hexagon);        layer.add(hexagon2);
+	hexagon = createRectSprite(w, h) ;
+	body = createRectBody(w / coefTest, h/ coefTest , x/ coefTest, y/ coefTest , hi) ;
+	actors.push({
+		body: body ,
+		sprite : hexagon,
+		draw:(function(hexagon, testBody, w,h){	   
+			
+			return function()
+			{
+				
+			hexagon.setX((testBody.GetPosition().x * coefTest - w/2)  );
+		hexagon.setY((testBody.GetPosition().y * coefTest -h/2)  );
+		hexagon.setRotation(testBody.GetAngle());
+			}
+		
+		})(hexagon, body, w,h)
+	
+	
+	});
+	 layer.add(hexagon);    
+}
+
         stage.add(layer);
 
         var amplitude = 150;
@@ -142,15 +163,18 @@ world.CreateBody(bodyDef).CreateFixture(fixDef);
          world.DrawDebugData();
          world.ClearForces();
          world.DrawDebugData();
-       
-			hexagon.setX((testBody.GetPosition().x -0.5) * coefTest );
-			hexagon.setY((testBody.GetPosition().y -0.7) * coefTest );
-			hexagon.setRotation(testBody.GetAngle());
-			
-			
-			hexagon2.setX((testBody2.GetPosition().x -0.5) * coefTest);
-			hexagon2.setY((testBody2.GetPosition().y -0.7) * coefTest);
-			hexagon2.setRotation(testBody2.GetAngle());
+         
+         
+         for (i = 0 ; i < actors.length ; i++)
+        	 {
+        	 
+        	   hexagon = actors[i].sprite ;
+        	   testBody =  actors[i].body ;
+	   			hexagon.setX((testBody.GetPosition().x -0.5) * coefTest );
+				hexagon.setY((testBody.GetPosition().y -0.7) * coefTest );
+				hexagon.setRotation(testBody.GetAngle());
+        	 }
+
 			
           layer.draw();
         });
