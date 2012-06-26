@@ -72,7 +72,6 @@ var fixDef = new b2FixtureDef;
             
     
       //groud
-
       bodyDef.type = b2Body.b2_staticBody;  
       fixDef.shape = new b2PolygonShape;
 fixDef.shape.SetAsBox(10, 1);
@@ -152,8 +151,6 @@ world.CreateBody(bodyDef).CreateFixture(fixDef);
 			hexagon2.setX((testBody2.GetPosition().x -0.5) * coefTest);
 			hexagon2.setY((testBody2.GetPosition().y -0.7) * coefTest);
 			hexagon2.setRotation(testBody2.GetAngle());
-			
-			
 			
           layer.draw();
         });
