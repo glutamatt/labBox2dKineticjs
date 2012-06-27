@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta name="viewport" content="user-scalable=0">
+</head>
+<body>
+
+
+orientation : <span id="orient"></span>
+ <script src="http://192.168.0.122:8080/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://192.168.0.122:8080/weapon');
+  
+  var xOrientation = null ;
+  var fireStart = null ;
+
+  window.addEventListener("deviceorientation", function(event) {
+	  document.getElementById("orient").innerHTML = Math.round(event.beta) ;
+	  xOrientation = Math.round(event.beta) ;
+	}, true);
+
+     
+     window.onload = function() {
+    	 
+    	 document.ontouchstart = function()
+    	 {
+    		 fireStart = new Date().getTime() ;
+    	 }
+    	 
+    	  document.ontouchend = function(){
+    		  socket.emit('fire', {
+    			  orientation :  xOrientation ,
+    			  power : (new Date().getTime() - fireStart)
+    		  });
+    	  }
+    	  
+      }
+     
+// //patch double click     
+//      var elm = document.body; // or some selection of the element you want to disable
+//      var catcher = function(evt) {
+//          if (evt.touches.length < 2)
+//              evt.preventDefault();
+//      };
+//      elm.addEventListener('touchstart', catcher, true);
+      
+          </script>
+</body>
+</html>

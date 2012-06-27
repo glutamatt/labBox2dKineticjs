@@ -12,7 +12,10 @@
     </style>
     <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
     <script type="text/javascript" src="https://raw.github.com/joelgwebber/bench2d/master/js/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.min.js"></script>
+     <script src="http://localhost:8080/socket.io/socket.io.js"></script>
     <script>
+
+    
     
 var coefTest = 30 ;
 
@@ -39,7 +42,7 @@ world = new b2World(
 
 
 
-function createRectBody(w, h , x, y , hi)
+function createRectBody(w, h , x, y , wi, hi)
 {
 	var fixDef = new b2FixtureDef;
     fixDef.density = 1.0;
@@ -57,75 +60,33 @@ bodyDef.type = b2Body.b2_dynamicBody;
        bodyDef.position.y = y;
        var testBody = world.CreateBody(bodyDef);
        testBody.CreateFixture(fixDef); 
-       
-       testBody.ApplyImpulse(new b2Vec2(hi,0), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
+       testBody.SetBullet(true);	
+       testBody.ApplyImpulse(new b2Vec2(wi, hi), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
        
        return testBody ;
 }
 
-
-      //groud
-var fixDef = new b2FixtureDef;
-         fixDef.density = 1.0;
-         fixDef.friction = 0.5;
-         fixDef.restitution = 0.2;
-             var bodyDef = new b2BodyDef;
-      bodyDef.type = b2Body.b2_staticBody;  
-      fixDef.shape = new b2PolygonShape;
-fixDef.shape.SetAsBox(5, 1);
-      bodyDef.position.y = 295 / coefTest ;
-      bodyDef.position.x = 0;
-world.CreateBody(bodyDef).CreateFixture(fixDef); 
-
-
-
-      window.onload = function() {
-      
-      
-       //setup debug draw
-         var debugDraw = new b2DebugDraw();
-			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
-			debugDraw.SetDrawScale(30.0);
-			debugDraw.SetFillAlpha(0.3);
-			debugDraw.SetLineThickness(1.0);
-			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			world.SetDebugDraw(debugDraw);  
-			
-			
-        var stage = new Kinetic.Stage({
-          container: "container",
-          width: 300,
-          height: 300
-        });
-        var layer = new Kinetic.Layer();
-
-
-        
-        function createRectSprite(w, h)
-        {
-        	
-        	return new Kinetic.Rect({
-                x: 0,
-                y: 0,
-                width: w ,
-                height: h ,
-                fill: "#00D2FF",
-                stroke: "black",
-                strokeWidth: 2,
-                offset: [ w/ 2 , h   / 2]
-              });
-        }
-        
-for (t = 0 ; t < 50 ; t++) {
-	
+function addRectActor(layer, orientation, power)
+{
 	w = Math.random() * 50 ;
 	h = Math.random() * 50 ;
+	w = 0.2 * 50 ;
+	h = 0.2  * 50 ;
 	y = Math.random() *10 ;
 	x = Math.random() *300 ;
-	hi = (Math.random() - 1 )*5 ;
-
+	y = 200 ;
+	x = 300 ;
+	
+	if(!orientation)orientation = 0 ;
+	if(!power)power = 0 ;
+	
+	power = power * 0.005 ;
+	
+	hi = Math.sin(orientation * 3.14/180)  * -1 * power;
+	wi = Math.cos(orientation * 3.14/180) * -1 * power ;
+	
 	hexagon = createRectSprite(w, h) ;
-	body = createRectBody(w / coefTest, h/ coefTest , x/ coefTest, y/ coefTest , hi) ;
+	body = createRectBody(w / coefTest, h/ coefTest , x/ coefTest, y/ coefTest , wi, hi);
 	actors.push({
 		body: body ,
 		sprite : hexagon,
@@ -146,6 +107,67 @@ for (t = 0 ; t < 50 ; t++) {
 	 layer.add(hexagon);    
 }
 
+function createRectSprite(w, h)
+{
+	
+	return new Kinetic.Rect({
+        x: 0,
+        y: 0,
+        width: w ,
+        height: h ,
+        fill: "#00D2FF",
+        stroke: "black",
+        strokeWidth: 2,
+        offset: [ w/ 2 , h   / 2]
+      });
+}
+
+      //groud
+var fixDef = new b2FixtureDef;
+         fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = 0.2;
+             var bodyDef = new b2BodyDef;
+      bodyDef.type = b2Body.b2_staticBody;  
+      fixDef.shape = new b2PolygonShape;
+fixDef.shape.SetAsBox(5, 1);
+      bodyDef.position.y = 295 / coefTest ;
+      bodyDef.position.x = 0;
+world.CreateBody(bodyDef).CreateFixture(fixDef); 
+
+
+
+var layer = new Kinetic.Layer();
+
+      window.onload = function() {
+    	  
+    	  init();
+      
+      
+       //setup debug draw
+         var debugDraw = new b2DebugDraw();
+			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+			debugDraw.SetDrawScale(30.0);
+			debugDraw.SetFillAlpha(0.3);
+			debugDraw.SetLineThickness(1.0);
+			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			world.SetDebugDraw(debugDraw);  
+			
+			
+        var stage = new Kinetic.Stage({
+          container: "container",
+          width: 300,
+          height: 300
+        });
+        
+
+
+        
+        
+for (t = 0 ; t < 50 ; t++) {
+	 addRectActor(layer) ;
+}
+
         stage.add(layer);
 
         var amplitude = 150;
@@ -156,7 +178,7 @@ for (t = 0 ; t < 50 ; t++) {
         stage.onFrame(function(frame) {
         
        world.Step(
-               1 / 60   //frame-rate
+               1 / 30   //frame-rate
             ,  10       //velocity iterations
             ,  10       //position iterations
          );
@@ -178,10 +200,26 @@ for (t = 0 ; t < 50 ; t++) {
         stage.start();
       };
 
+      
+      function init()
+      {
+    	  document.getElementById("new").onclick = function(){
+    		  addRectActor(layer) ;
+    	  }
+      }
+      
+      
+      var socket = io.connect('http://192.168.0.122:8080/game');
+      socket.on('fire', function (data) {
+    	  console.log (data.power) ;
+      	addRectActor(layer, data.orientation, data.power) ;
+        });
+      
     </script>
   </head>
   <body>
     <div id="container"></div>
     <canvas id="canvas" width="300" height="300"></canvas>
+    <button id="new">NEW</button>
   </body>
 </html>
