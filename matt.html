@@ -38,7 +38,15 @@ var   b2Vec2 = Box2D.Common.Math.b2Vec2
 world = new b2World(
  new b2Vec2(0, 10)    //gravity
  ,  true                 //allow sleep
- );         
+ );       
+
+
+var myListener = new Box2D.Dynamics.b2ContactListener;
+myListener.PostSolve = function(contact , impulse) {
+	   console.log('contact : ' + contact);
+}
+world.SetContactListener(myListener);
+
 
 
 
@@ -70,8 +78,8 @@ function addRectActor(layer, orientation, power)
 {
 	w = Math.random() * 50 ;
 	h = Math.random() * 50 ;
-	w = 0.2 * 50 ;
-	h = 0.2  * 50 ;
+	w = 0.3 * 50 ;
+	h = 0.3  * 50 ;
 	y = Math.random() *10 ;
 	x = Math.random() *300 ;
 	y = 200 ;
@@ -130,9 +138,9 @@ var fixDef = new b2FixtureDef;
              var bodyDef = new b2BodyDef;
       bodyDef.type = b2Body.b2_staticBody;  
       fixDef.shape = new b2PolygonShape;
-fixDef.shape.SetAsBox(5, 1);
-      bodyDef.position.y = 295 / coefTest ;
-      bodyDef.position.x = 0;
+fixDef.shape.SetAsBox(300 / coefTest, 10/coefTest);
+      bodyDef.position.y = 300  / coefTest ;
+      bodyDef.position.x =300  / 2 / coefTest ;
 world.CreateBody(bodyDef).CreateFixture(fixDef); 
 
 
@@ -160,14 +168,6 @@ var layer = new Kinetic.Layer();
           height: 300
         });
         
-
-
-        
-        
-for (t = 0 ; t < 50 ; t++) {
-	 addRectActor(layer) ;
-}
-
         stage.add(layer);
 
         var amplitude = 150;
@@ -178,7 +178,7 @@ for (t = 0 ; t < 50 ; t++) {
         stage.onFrame(function(frame) {
         
        world.Step(
-               1 / 30   //frame-rate
+               1 / 40   //frame-rate
             ,  10       //velocity iterations
             ,  10       //position iterations
          );
