@@ -1,5 +1,8 @@
-function Game()
+function Game(w, h)
 {
+	this.stageWidth = w;
+	this.stageHeight = h;
+	
 	this.physics = new Physics() ;
 	this.graphics = new Graphics() ;
 	
@@ -10,11 +13,24 @@ function Game()
 	this.start = function()
 	{
 		this.physics.createWorld() ;
-		this.physics.createGround() ;
 		this.graphics.setOnFrameHandler(this.onFrameHandler, this);
-		this.layer = this.graphics.createStage("container",1200, 500 ) ;
+		this.layer = this.graphics.createStage("container",this.stageWidth, this.stageHeight) ;
 		this.physics.drawDebug(document.getElementById("canvas").getContext("2d"));
+		this.createGround() ;
 	} ;
+	
+	this.createGround = function()
+	{
+		var x = this.stageWidth / 2  ;
+		var y = this.stageHeight - 25 ;
+		var w = this.stageWidth + 100 ;
+		var h = 50 ;
+		
+		this.physics.createRectBody(w, h, x, y, true);
+		var sprite = this.graphics.createRectSprite(w, h);
+		sprite.setX( x ); sprite.setY( y ) ;
+		this.graphics.addSprite(sprite, this.layer) ;
+	};
 	
 	this.onFrameHandler = function (frame)
 	{
@@ -31,16 +47,15 @@ function Game()
 		
 		if(!orientation)orientation = 0 ;
 		if(!power)power = 0 ;
-		power = power * 0.005 ;
-		hi = Math.sin(orientation * 3.14/180)  * -1 * power;
-		wi = Math.cos(orientation * 3.14/180) * -1 * power ;
+		power = Math.min ( power, 2000 )* 0.01 ;
 		
 		var spec  = null ;
 		if(Math.random() > 0.5  ) spec = CircleSpec ;
 			else  spec = BrickSpec ;
 		
 		actor = new Actor(spec, this.layer, this.graphics, this.physics);
-		actor.create(w, h, x, y, wi, hi) ;
+		actor.create(w, h, x, y ) ;
+		this.physics.impulse(actor.body, orientation  , power) ;
 		this.actors.push(actor);
 	};
 

@@ -6,11 +6,6 @@ function Graphics( )
 	this.onFrameHandler = function(frame){} ;
 	this.delegateOnFrameHandler = null ;
 	
-	this._onFrameHandler = function(frame)
-	{
-		for ( var i in this.layers ) this.layers[i].draw() ;
-	} ;
-	
 	this.setOnFrameHandler = function(handler, delegate)
 	{
 		this.onFrameHandler = handler ;
@@ -28,7 +23,7 @@ function Graphics( )
 		this.stage.onFrame((function(delegate){
 			return function(frame){
 				delegate.delegateOnFrameHandler.onFrameHandler(frame);
-				delegate._onFrameHandler(frame);
+				for ( var i in delegate.layers ) delegate.layers[i].draw() ;
 			};
 		})(this)) ;
 		this.stage.start();

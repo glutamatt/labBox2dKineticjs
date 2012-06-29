@@ -41,7 +41,7 @@ function Physics() {
 		    return fixDef;
 		};
 		
-		this.createBody = function(shape, w, h , x, y , wi, hi){
+		this.createBody = function(shape, w, h , x, y , staticBody ){
 			
 			w = w / this.b2Ratio;
 			h = h/ this.b2Ratio ;
@@ -52,55 +52,51 @@ function Physics() {
 		    
 		var bodyDef = new b2BodyDef;
 		bodyDef.type = b2Body.b2_dynamicBody;  
-		  fixDef.shape = shape ;
-		           bodyDef.position.x = x;
-		       bodyDef.position.y = y;
-		       var testBody = this.world.CreateBody(bodyDef);
-		       testBody.CreateFixture(fixDef); 
-		      // testBody.SetBullet(true);	
-		       testBody.ApplyImpulse(new b2Vec2(wi, hi), new b2Vec2(testBody.GetPosition().x,testBody.GetPosition().y ));
-		       
-		       return testBody ;
+		if(staticBody) bodyDef.type = b2Body.b2_staticBody;  
+		fixDef.shape = shape ;
+		bodyDef.position.x = x;
+		bodyDef.position.y = y;
+		var newbody = this.world.CreateBody(bodyDef);
+		newbody.CreateFixture(fixDef); 
+		// testBody.SetBullet(true);	
+		//newbody.ApplyImpulse(new b2Vec2(wi, hi), new b2Vec2(newbody.GetPosition().x,newbody.GetPosition().y ));
+		return newbody ;
 		};
 		
-		this.createCircleBody = function (w, h , x, y , wi, hi)
+		this.createCircleBody = function (w, h , x, y )
 		{
 			var shape = new b2CircleShape;
 	        shape.SetRadius(h / 2 / this.b2Ratio) ;
-	        return this.createBody(shape, w, h, x, y, wi, hi) ;
+	        return this.createBody(shape, w, h, x, y) ;
 		};
 		
-		this.createRectBody = function (w, h , x, y , wi, hi)
+		this.createRectBody = function (w, h , x, y, staticBody)
 		{
 			var shape = new b2PolygonShape;
 	        shape.SetAsBox( w / 2 / this.b2Ratio ,  h / 2 / this.b2Ratio ); 
-	        return this.createBody(shape, w, h, x, y, wi, hi) ;
+	        return this.createBody(shape, w, h, x, y, staticBody ) ;
 		} ;
+		
+		this.impulse = function(body, angle, power)
+		{
+			body.ApplyImpulse(
+					new b2Vec2(
+							Math.cos(angle * Math.PI/180) * power,
+							Math.sin(angle  * Math.PI/180) * -1 * power
+					),
+					new b2Vec2(body.GetPosition().x,body.GetPosition().y )
+			);
+		};
 		
 		this.drawDebug = function(context)
 		{
 			 var debugDraw = new b2DebugDraw();
 				debugDraw.SetSprite(context);
-				debugDraw.SetDrawScale(30.0);
+				debugDraw.SetDrawScale(10.0);
 				debugDraw.SetFillAlpha(0.3);
 				debugDraw.SetLineThickness(1.0);
 				debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 				this.world.SetDebugDraw(debugDraw);  
-		} ;
-		
-		
-		this.createGround = function(){
-			var fixDef = new b2FixtureDef;
-	         fixDef.density = 1.0;
-	         fixDef.friction = 0.5;
-	         fixDef.restitution = 0.2;
-	             var bodyDef = new b2BodyDef;
-	      bodyDef.type = b2Body.b2_staticBody;  
-	      fixDef.shape = new b2PolygonShape;
-	fixDef.shape.SetAsBox(300 / this.b2Ratio, 10/this.b2Ratio);
-	      bodyDef.position.y = 300  / this.b2Ratio ;
-	      bodyDef.position.x =300  / 2 / this.b2Ratio ;
-	this.world.CreateBody(bodyDef).CreateFixture(fixDef); 
 		} ;
 		
 		this.setContactListener = function()

@@ -12,17 +12,20 @@
         border: 1px solid #9C9898;
       }
     </style>
+    
     <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
     <script type="text/javascript" src="https://raw.github.com/joelgwebber/bench2d/master/js/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.min.js"></script>
      <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+     
      <script src="js/physics.js"></script>
      <script src="js/graphics.js"></script>
      <script src="js/actors.js"></script>
      <script src="js/game.js"></script>
+     
      <script type="text/javascript">
      window.onload = function() {
     	 
-    	 var game = new Game();
+    	 var game = new Game(1200, 500);
     	 game.start();
     	 
     	 document.onclick = function(){
@@ -42,8 +45,7 @@
   
     <div id="container"></div>
     
-    <canvas id="canvas" width="900" height="300"></canvas><!-- debug view -->
-    
+    <canvas id="canvas" width="900" height="200"></canvas><!-- debug view -->
     
   </body>
 </html>
