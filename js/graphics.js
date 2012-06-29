@@ -2,16 +2,19 @@ function Graphics( )
 {
 	this.stage = null ;
 	this.layers = new Array();
+	
 	this.onFrameHandler = function(frame){} ;
+	this.delegateOnFrameHandler = null ;
 	
 	this._onFrameHandler = function(frame)
 	{
 		for ( var i in this.layers ) this.layers[i].draw() ;
 	} ;
 	
-	this.setOnFrameHandler = function(handler)
+	this.setOnFrameHandler = function(handler, delegate)
 	{
 		this.onFrameHandler = handler ;
+		this.delegateOnFrameHandler = delegate;
 	};
 	
 	this.createStage = function (  container, width, height )
@@ -24,8 +27,8 @@ function Graphics( )
 		var layer = this.createLayer();
 		this.stage.onFrame((function(delegate){
 			return function(frame){
+				delegate.delegateOnFrameHandler.onFrameHandler(frame);
 				delegate._onFrameHandler(frame);
-				delegate.onFrameHandler(frame);
 			};
 		})(this)) ;
 		this.stage.start();
@@ -54,10 +57,19 @@ function Graphics( )
 	      });
 	} ;
 	
+	this.createCircleSprite = function (radius)
+	{
+		return new Kinetic.Circle({
+	          radius: radius,
+	          fill: "red",
+	          stroke: "black",
+	          strokeWidth: 2
+	        });
+	} ;
+	
 	this.addSprite = function(sprite, layer)
 	{
 		 layer.add(sprite);
 	} ;
-	
 }
 

@@ -17,14 +17,32 @@
      <script src="http://localhost:8080/socket.io/socket.io.js"></script>
      <script src="js/physics.js"></script>
      <script src="js/graphics.js"></script>
+     <script src="js/actors.js"></script>
      <script src="js/game.js"></script>
+     <script type="text/javascript">
+     window.onload = function() {
+    	 
+    	 var game = new Game();
+    	 game.start();
+    	 
+    	 document.onclick = function(){
+    		 game.addActor(45, 150) ;
+     	};
+       
+     	var socket = io.connect('http://192.168.0.122:8080/game');
+     	socket.on('fire', function (data) {
+     		game.addActor(data.orientation, data.power) ;
+     	});
+     	
+     	} ;
+     </script>
   </head>
   
   <body>
   
     <div id="container"></div>
     
-    <canvas id="canvas" width="300" height="300"></canvas><!-- debug view -->
+    <canvas id="canvas" width="900" height="300"></canvas><!-- debug view -->
     
     
   </body>
