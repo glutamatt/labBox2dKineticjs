@@ -17,7 +17,35 @@ function Game(w, h)
 		this.layer = this.graphics.createStage("container",this.stageWidth, this.stageHeight) ;
 		this.physics.drawDebug(document.getElementById("canvas").getContext("2d"));
 		this.createGround() ;
+		this.createBuilding(30) ;
+		this.createBuilding(1000) ;
 	} ;
+	
+	this.createBuilding = function(xstart)
+	{
+		var nbEtage = 9 ;
+		var parEtage = 8;
+		var w = 20 ;
+		
+		var startX= xstart;
+		var startY= 430;
+		
+		var i = 0 ;
+		var e = 0 ;
+		
+		for ( e = 0 ; e < nbEtage ; e++ )
+		{
+			for ( i = 0 ; i < parEtage - e  ; i++ )
+			{
+				x = startX +  (  i * w * 1.3  ) + (e * 2 * w / 3 );
+				y= startY - (w * e ); 
+				actor = new Actor(BrickSpec, this.layer, this.graphics, this.physics);
+				actor.create(w, w, x, y) ;
+				this.actors.push(actor);
+			}
+		}
+
+	};
 	
 	this.createGround = function()
 	{
@@ -38,24 +66,22 @@ function Game(w, h)
 	       for (var i = 0 ; i < this.actors.length ; i++) this.actors[i].draw();
 	  };
 	
-	this.addActor = function(orientation, power)
+	this.fireBullet = function(orientation, power)
 	{
-		w = 0.3 * 50 ;
-		h = 0.3  * 50 ;
+		w = 0.4 * 50 ;
+		h = 0.4* 50 ;
 		y = 200 ;
-		x = 300 ;
+		x =1100 ;
 		
 		if(!orientation)orientation = 0 ;
 		if(!power)power = 0 ;
-		power = Math.min ( power, 2000 )* 0.01 ;
+		power = Math.min ( power+300 , 2500 )* 0.01 ;
 		
-		var spec  = null ;
-		if(Math.random() > 0.5  ) spec = CircleSpec ;
-			else  spec = BrickSpec ;
-		
-		actor = new Actor(spec, this.layer, this.graphics, this.physics);
+		actor = new Actor(CircleSpec, this.layer, this.graphics, this.physics);
 		actor.create(w, h, x, y ) ;
+		this.physics.setBullet(actor.body);
 		this.physics.impulse(actor.body, orientation  , power) ;
+		
 		this.actors.push(actor);
 	};
 

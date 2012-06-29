@@ -13,9 +13,9 @@
       }
     </style>
     
-    <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
-    <script type="text/javascript" src="https://raw.github.com/joelgwebber/bench2d/master/js/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.min.js"></script>
-     <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <script src="js/lib/kinetic-v3.10.0.js"></script>
+    <script src="js/lib/Box2dWeb-2.1.a.3.min.js"></script>
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
      
      <script src="js/physics.js"></script>
      <script src="js/graphics.js"></script>
@@ -29,12 +29,12 @@
     	 game.start();
     	 
     	 document.onclick = function(){
-    		 game.addActor(45, 150) ;
+    		 game.fireBullet(45, 150) ;
      	};
        
      	var socket = io.connect('http://192.168.0.122:8080/game');
      	socket.on('fire', function (data) {
-     		game.addActor(data.orientation, data.power) ;
+     		game.fireBullet(data.orientation, data.power) ;
      	});
      	
      	} ;

@@ -35,7 +35,7 @@ function Physics() {
 		this.getDefaultFixtureDef = function()
 		{
 			var fixDef = new b2FixtureDef;
-		    fixDef.density = 1.0;
+		    fixDef.density = 0.7;
 		    fixDef.friction = 0.5;
 		    fixDef.restitution = 0.2;
 		    return fixDef;
@@ -58,7 +58,6 @@ function Physics() {
 		bodyDef.position.y = y;
 		var newbody = this.world.CreateBody(bodyDef);
 		newbody.CreateFixture(fixDef); 
-		// testBody.SetBullet(true);	
 		//newbody.ApplyImpulse(new b2Vec2(wi, hi), new b2Vec2(newbody.GetPosition().x,newbody.GetPosition().y ));
 		return newbody ;
 		};
@@ -68,6 +67,11 @@ function Physics() {
 			var shape = new b2CircleShape;
 	        shape.SetRadius(h / 2 / this.b2Ratio) ;
 	        return this.createBody(shape, w, h, x, y) ;
+		};
+		
+		this.setBullet = function(body)
+		{
+			body.SetBullet(true);	
 		};
 		
 		this.createRectBody = function (w, h , x, y, staticBody)
@@ -81,7 +85,7 @@ function Physics() {
 		{
 			body.ApplyImpulse(
 					new b2Vec2(
-							Math.cos(angle * Math.PI/180) * power,
+							Math.cos(angle * Math.PI/180) * -1 * power,
 							Math.sin(angle  * Math.PI/180) * -1 * power
 					),
 					new b2Vec2(body.GetPosition().x,body.GetPosition().y )
