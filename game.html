@@ -29,12 +29,13 @@
     	 game.start();
     	 
     	 document.onclick = function(){
-    		 game.fireBullet(45, 150) ;
+    		 game.fireBullet(1, 35, 100) ;
      	};
        
      	var socket = io.connect('http://192.168.0.122:8080/game');
      	socket.on('fire', function (data) {
-     		game.fireBullet(data.orientation, data.power) ;
+     		console.log(data);
+     		game.fireBullet(data.player, data.shoot.orientation, data.shoot.power) ;
      	});
      	
      	} ;

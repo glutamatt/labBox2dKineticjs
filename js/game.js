@@ -66,16 +66,23 @@ function Game(w, h)
 	       for (var i = 0 ; i < this.actors.length ; i++) this.actors[i].draw();
 	  };
 	
-	this.fireBullet = function(orientation, power)
+	this.fireBullet = function(player, orientation, power)
 	{
 		w = 0.4 * 50 ;
 		h = 0.4* 50 ;
 		y = 200 ;
 		x =1100 ;
 		
+		
 		if(!orientation)orientation = 0 ;
 		if(!power)power = 0 ;
 		power = Math.min ( power+300 , 2500 )* 0.01 ;
+		
+		if(player == 1)
+		{
+			x = 100 ;
+			orientation = orientation * -1 +180 ;
+		}
 		
 		actor = new Actor(CircleSpec, this.layer, this.graphics, this.physics);
 		actor.create(w, h, x, y ) ;
