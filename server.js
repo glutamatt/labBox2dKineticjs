@@ -1,4 +1,14 @@
-var io = require('socket.io').listen(8080);
+
+var express = require('express')
+  , app = express()
+  , server = require('http').createServer(app)
+  , io = require('socket.io').listen(server);
+
+app.use(express.static('public'));
+app.get('/', function(req, res) {res.sendfile('weapon.html');});
+app.get('/game', function(req, res) {res.sendfile('game.html');});
+
+server.listen(8008);
 
 var socketgame;
 var socketPlayer1;

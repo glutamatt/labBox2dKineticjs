@@ -13,14 +13,14 @@
       }
     </style>
     
-    <script src="js/lib/kinetic-v3.10.0.js"></script>
-    <script src="js/lib/Box2dWeb-2.1.a.3.min.js"></script>
-    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <script src="/js/lib/kinetic-v3.10.0.js"></script>
+    <script src="/js/lib/Box2dWeb-2.1.a.3.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
      
-     <script src="js/physics.js"></script>
-     <script src="js/graphics.js"></script>
-     <script src="js/actors.js"></script>
-     <script src="js/game.js"></script>
+     <script src="/js/physics.js"></script>
+     <script src="/js/graphics.js"></script>
+     <script src="/js/actors.js"></script>
+     <script src="/js/game.js"></script>
      
      <script type="text/javascript">
      window.onload = function() {
@@ -32,7 +32,7 @@
     		 game.fireBullet(1, 35, 100) ;
      	};
        
-     	var socket = io.connect('http://192.168.0.122:8080/game');
+     	var socket = io.connect('/game');
      	socket.on('fire', function (data) {
      		console.log(data);
      		game.fireBullet(data.player, data.shoot.orientation, data.shoot.power) ;
